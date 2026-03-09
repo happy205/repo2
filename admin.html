@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>관리자 페이지 | Jamsil Private Lounge</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="config.js"></script>
+    <script type="module" src="admin.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container nav">
+        <a class="brand" href="index.html">Jamsil Private Lounge</a>
+        <nav>
+          <a href="index.html">홈</a>
+          <a href="beans.html">원두 소개</a>
+          <a href="guide.html">이용 가이드</a>
+          <a href="admin.html">관리자</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container section">
+      <h1>관리자 페이지</h1>
+
+      <section id="loginSection" class="card admin-block">
+        <h2>로그인</h2>
+        <p class="muted">초기 계정: admin / 1234</p>
+        <form id="loginForm" class="form">
+          <label>아이디 <input name="username" required /></label>
+          <label>비밀번호 <input name="password" type="password" required /></label>
+          <button class="btn" type="submit">로그인</button>
+          <p id="loginStatus" class="form-status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section id="dashboardSection" class="admin-hidden">
+        <div class="admin-head">
+          <h2>관리 대시보드</h2>
+          <button id="logoutBtn" class="btn">로그아웃</button>
+        </div>
+
+        <div class="grid policy-grid">
+          <article class="card admin-block">
+            <h3>운영 정책 설정</h3>
+            <form id="policyForm" class="form">
+              <label>시간당 1인 요금(원)
+                <input type="number" name="hourlyPricePerPerson" min="1000" step="500" required />
+              </label>
+              <label>음료 제공 안내 문구
+                <input type="text" name="beveragePolicy" maxlength="120" required />
+              </label>
+              <label>
+                Wi-Fi 제공
+                <select name="wifiEnabled">
+                  <option value="true">제공</option>
+                  <option value="false">미제공</option>
+                </select>
+              </label>
+              <label>4인석 최소 인원
+                <input type="number" name="min4" min="1" max="4" required />
+              </label>
+              <label>6인석 최소 인원
+                <input type="number" name="min6" min="1" max="6" required />
+              </label>
+              <button class="btn" type="submit">설정 저장</button>
+              <p id="policyStatus" class="form-status" aria-live="polite"></p>
+            </form>
+          </article>
+
+          <article class="card admin-block">
+            <h3>요일별 영업시간 설정</h3>
+            <form id="hoursForm" class="form">
+              <div id="hoursRows"></div>
+              <button class="btn" type="submit">영업시간 저장</button>
+              <p id="hoursStatus" class="form-status" aria-live="polite"></p>
+            </form>
+          </article>
+        </div>
+
+        <article class="card admin-block">
+          <h3>예약 현황</h3>
+          <p>총 예약 건수: <strong id="totalReservationCount">0</strong></p>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>일시</th><th>이름</th><th>연락처</th><th>좌석</th><th>인원</th><th>시간</th><th>요금</th><th>경로</th>
+                </tr>
+              </thead>
+              <tbody id="reservationTableBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
