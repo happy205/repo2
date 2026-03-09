@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>장미상가 프라이빗 티 & 커피 라운지</title>
+    <meta
+      name="description"
+      content="잠실역 장미상가 근처 프라이빗 예약제 카페. 드립 커피/차, 시간제 예약, 실시간 좌석 현황 확인."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="config.js"></script>
+    <script type="module" src="script.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container nav">
+        <a class="brand" href="index.html">Jamsil Private Lounge</a>
+        <nav>
+          <a href="index.html">홈</a>
+          <a href="beans.html">원두 소개</a>
+          <a href="guide.html">이용 가이드</a>
+          <a href="#reservation">예약</a>
+        </nav>
+      </div>
+    </header>
+
+    <header class="hero">
+      <div class="hero__content container">
+        <p class="badge">Jamsil Rose Complex</p>
+        <h1>작지만 깊이 있는, <br />프라이빗 예약제 카페</h1>
+        <p>
+          다양한 원산지의 커피 원두 드립과 차, 그리고 음악에 집중할 수 있는 공간입니다.<br />
+          홈페이지 예약과 네이버 예약은 같은 재고를 바라보도록 설계되어, 중복 예약을 방지합니다.
+        </p>
+        <div class="hero__actions">
+          <a class="btn" href="#reservation">지금 예약하기</a>
+          <a class="btn btn--ghost" href="https://booking.naver.com" target="_blank" rel="noreferrer">네이버 예약</a>
+        </div>
+        <div class="hero-hours card">
+          <h3>요일별 영업시간</h3>
+          <ul id="businessHoursList"></ul>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="container section">
+        <h2>공간 및 제공 서비스</h2>
+        <div class="grid seat-grid">
+          <article class="card"><h3>1인석</h3><p><strong>50석</strong></p></article>
+          <article class="card"><h3>2인석</h3><p><strong>10석</strong></p></article>
+          <article class="card"><h3>4인석</h3><p><strong>2석</strong><br />3인 이상부터 이용</p></article>
+          <article class="card"><h3>6인석</h3><p><strong>2석</strong><br />4인 이상부터 이용</p></article>
+        </div>
+        <div class="grid policy-grid">
+          <article class="card">
+            <h3>요금 안내</h3>
+            <p>1시간 기준 1인 <strong>5,000원</strong></p>
+          </article>
+          <article class="card">
+            <h3>음료 제공</h3>
+            <p>예약 시간 동안 1인당 컵 1개 기준으로<br />커피 2회 / 물 2회 제공</p>
+          </article>
+          <article class="card">
+            <h3>편의시설</h3>
+            <p>무료 Wi-Fi 제공</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="container section" id="reservation">
+        <div class="split">
+          <div>
+            <h2>예약하기</h2>
+            <p>
+              시간 단위 예약만 가능하며, 선택한 날짜의 영업시간에 맞는 시간만 선택할 수 있습니다.
+            </p>
+            <form id="reservationForm" class="card form">
+              <label>
+                예약자명
+                <input type="text" name="name" required maxlength="30" />
+              </label>
+              <label>
+                연락처
+                <input type="tel" name="phone" required placeholder="010-0000-0000" />
+              </label>
+              <label>
+                좌석 유형
+                <select name="seatType" required>
+                  <option value="1">1인석</option>
+                  <option value="2">2인석</option>
+                  <option value="4">4인석</option>
+                  <option value="6">6인석</option>
+                </select>
+              </label>
+              <label>
+                인원
+                <input type="number" name="people" min="1" max="6" required />
+              </label>
+              <label>
+                예약 시간(시간)
+                <input type="number" name="duration" min="1" max="6" value="1" required />
+              </label>
+              <label>
+                예약 날짜
+                <input type="date" name="date" id="dateInput" required />
+              </label>
+              <label>
+                예약 시간 (정시)
+                <select name="hour" id="hourInput" required>
+                  <option value="">날짜를 먼저 선택해주세요</option>
+                </select>
+              </label>
+              <p class="muted">예상 요금: <strong id="estimatedPrice">0원</strong></p>
+              <button type="submit" class="btn">예약 요청 등록</button>
+              <p id="formStatus" class="form-status" aria-live="polite"></p>
+            </form>
+          </div>
+
+          <div>
+            <h3>실시간 예약 현황</h3>
+            <div class="card availability">
+              <p>선택한 시간대 예약 건수: <strong id="reservationCount">0</strong></p>
+              <ul id="availabilityList"></ul>
+            </div>
+            <p id="syncBadge" class="muted"></p>
+            <p class="muted">
+              * 네이버 예약 이벤트는 서버리스 동기화 엔드포인트가 `source: "naver"`로 같은 DB에 기록하면 즉시 반영됩니다.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="container footer">
+      <p>© 2026 Jamsil Private Tea & Coffee Lounge. All rights reserved.</p>
+    </footer>
+  </body>
+</html>
