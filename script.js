@@ -16,13 +16,58 @@ const dateInput = document.getElementById('dateInput');
 const hourInput = document.getElementById('hourInput');
 const businessHoursList = document.getElementById('businessHoursList');
 const estimatedPriceEl = document.getElementById('estimatedPrice');
+const priceSummaryEl = document.getElementById('priceSummary');
+const beverageSummaryEl = document.getElementById('beverageSummary');
+const wifiSummaryEl = document.getElementById('wifiSummary');
+const seat4SummaryEl = document.getElementById('seat4Summary');
+const seat6SummaryEl = document.getElementById('seat6Summary');
 
 const seatInventory = { '1': 50, '2': 10, '4': 2, '6': 2 };
 const seatLabel = { '1': '1인석', '2': '2인석', '4': '4인석', '6': '6인석' };
 const weekdayLabel = ['일', '월', '화', '수', '목', '금', '토'];
-const businessHours = window.APP_CONFIG?.businessHours || {};
-const hourlyPricePerPerson = 5000;
+
+const defaultSettings = {
+  businessHours: window.APP_CONFIG?.businessHours || {},
+  hourlyPricePerPerson: 5000,
+  beveragePolicy: '1인당 컵 1개 기준으로 커피 2회 / 물 2회 제공',
+  wifiEnabled: true,
+  minPeopleBySeat: { '4': 3, '6': 4 },
+};
+
+function loadRuntimeSettings() {
+  const stored = JSON.parse(localStorage.getItem('jamsil-admin-settings') || '{}');
+  return {
+    ...defaultSettings,
+    ...stored,
+    minPeopleBySeat: {
+      ...defaultSettings.minPeopleBySeat,
+      ...(stored.minPeopleBySeat || {}),
+    },
+  };
+}
+
+const settings = loadRuntimeSettings();
+const businessHours = settings.businessHours || {};
+const hourlyPricePerPerson = Number(settings.hourlyPricePerPerson) || 5000;
 let allReservations = [];
+
+function applyPolicyToUi() {
+  if (priceSummaryEl) {
+    priceSummaryEl.innerHTML = `1시간 기준 1인 <strong>${hourlyPricePerPerson.toLocaleString('ko-KR')}원</strong>`;
+  }
+  if (beverageSummaryEl) {
+    beverageSummaryEl.textContent = settings.beveragePolicy;
+  }
+  if (wifiSummaryEl) {
+    wifiSummaryEl.textContent = settings.wifiEnabled ? '무료 Wi-Fi 제공' : 'Wi-Fi 미제공';
+  }
+  if (seat4SummaryEl) {
+    seat4SummaryEl.textContent = `${settings.minPeopleBySeat['4']}인 이상부터 이용`;
+  }
+  if (seat6SummaryEl) {
+    seat6SummaryEl.textContent = `${settings.minPeopleBySeat['6']}인 이상부터 이용`;
+  }
+}
 
 function getSlotKey(datetime) {
   return String(datetime || '').slice(0, 13);
@@ -111,10 +156,6 @@ function renderAvailability() {
 }
 
 function updateEstimatedPrice() {
-  if (!form || !estimatedPriceEl) {
-    return;
-  }
-
   const formData = new FormData(form);
   const people = Number(formData.get('people') || 0);
   const duration = Number(formData.get('duration') || 0);
@@ -140,12 +181,12 @@ function validatePayload(payload) {
     return `${seatLabel[payload.seatType]}은 최대 ${payload.seatType}인까지 예약할 수 있습니다.`;
   }
 
-  if (payload.seatType === '4' && payload.people < 3) {
-    return '4인석은 3인 이상부터 예약 가능합니다.';
+  if (payload.seatType === '4' && payload.people < Number(settings.minPeopleBySeat['4'])) {
+    return `4인석은 ${settings.minPeopleBySeat['4']}인 이상부터 예약 가능합니다.`;
   }
 
-  if (payload.seatType === '6' && payload.people < 4) {
-    return '6인석은 4인 이상부터 예약 가능합니다.';
+  if (payload.seatType === '6' && payload.people < Number(settings.minPeopleBySeat['6'])) {
+    return `6인석은 ${settings.minPeopleBySeat['6']}인 이상부터 예약 가능합니다.`;
   }
 
   const dayHours = getBusinessHourForDate(payload.date);
@@ -207,6 +248,7 @@ if (syncBadge) {
     : '데모 모드: config.js 미설정으로 브라우저 로컬 저장소 사용 중';
 }
 
+applyPolicyToUi();
 renderBusinessHours();
 
 const today = new Date().toISOString().slice(0, 10);
@@ -247,7 +289,7 @@ form.addEventListener('submit', async (event) => {
     hour,
     datetime: date && hour ? buildDatetime(date, hour) : '',
     price: people * duration * hourlyPricePerPerson,
-    beveragePolicy: '1인당 컵 1개 기준, 커피 2회 + 물 2회 제공',
+    beveragePolicy: settings.beveragePolicy,
   };
 
   const validationMessage = validatePayload(payload);

@@ -27,6 +27,7 @@
           <a href="beans.html">원두 소개</a>
           <a href="guide.html">이용 가이드</a>
           <a href="#reservation">예약</a>
+          <a href="admin.html">관리자</a>
         </nav>
       </div>
     </header>
@@ -56,21 +57,21 @@
         <div class="grid seat-grid">
           <article class="card"><h3>1인석</h3><p><strong>50석</strong></p></article>
           <article class="card"><h3>2인석</h3><p><strong>10석</strong></p></article>
-          <article class="card"><h3>4인석</h3><p><strong>2석</strong><br />3인 이상부터 이용</p></article>
-          <article class="card"><h3>6인석</h3><p><strong>2석</strong><br />4인 이상부터 이용</p></article>
+          <article class="card"><h3>4인석</h3><p><strong>2석</strong><br /><span id="seat4Summary">3인 이상부터 이용</span></p></article>
+          <article class="card"><h3>6인석</h3><p><strong>2석</strong><br /><span id="seat6Summary">4인 이상부터 이용</span></p></article>
         </div>
         <div class="grid policy-grid">
           <article class="card">
             <h3>요금 안내</h3>
-            <p>1시간 기준 1인 <strong>5,000원</strong></p>
+            <p id="priceSummary">1시간 기준 1인 <strong>5,000원</strong></p>
           </article>
           <article class="card">
             <h3>음료 제공</h3>
-            <p>예약 시간 동안 1인당 컵 1개 기준으로<br />커피 2회 / 물 2회 제공</p>
+            <p>예약 시간 동안 1인당 컵 1개 기준으로<br /><span id="beverageSummary">커피 2회 / 물 2회 제공</span></p>
           </article>
           <article class="card">
             <h3>편의시설</h3>
-            <p>무료 Wi-Fi 제공</p>
+            <p id="wifiSummary">무료 Wi-Fi 제공</p>
           </article>
         </div>
       </section>

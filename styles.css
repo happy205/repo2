@@ -84,3 +84,17 @@ input, select {
 @media (max-width: 900px) {
   .split { grid-template-columns: 1fr; }
 }
+
+.admin-hidden { display: none; }
+.admin-block { margin-top: 1rem; }
+.admin-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.hours-row {
+  display: grid;
+  grid-template-columns: 80px 100px 1fr 1fr;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.admin-table-wrap { overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.admin-table th, .admin-table td { border-bottom: 1px solid var(--border); padding: 0.5rem; text-align: left; }
